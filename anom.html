@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<!-- Basic -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Amalesh - Blog Post</title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	
+	<!-- Mobile Specific Metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
+	<!-- Load Fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,100,300italic,300,100italic,400italic,500,500italic,700,700italic&amp;subset=latin,cyrillic' rel='stylesheet'>
+	
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/glitche-basic.css" />
+	<link rel="stylesheet" href="css/glitche-layout.css" />
+	<link rel="stylesheet" href="css/ionicons.css" />
+	<link rel="stylesheet" href="css/magnific-popup.css" />
+	<link rel="stylesheet" href="css/animate.css" />
+	
+	<!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+	<!-- Favicons -->
+	<link rel="shortcut icon" href="images/favicons/favicon.ico">
+	<link rel="apple-touch-icon" href="images/favicons/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/favicons/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/favicons/apple-touch-icon-114x114.png">
+	
+</head>
+
+<body>	
+	
+	<!-- Preloader -->
+	<div class="preloader">
+		<div class="centrize full-width">
+			<div class="vertical-center">
+				<div class="pre-inner">
+					<div class="load typing-load"><p>loading...</p></div>
+					<span class="typed-load"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Container -->
+	<div class="container">
+		
+		<!-- Header -->
+		<header>
+			<div class="head-top">
+				<a href="#" class="menu-btn"><span></span></a>
+				<div class="top-menu">
+					<ul>
+						<li><a href="resume.html" class="lnk">Resume</a></li>
+						<li><a href="portfolio.html" class="lnk">Portfolio</a></li>
+						<li class="active"><a href="blog.html" class="lnk">Blog</a></li>
+						<li><a href="contacts.html" class="btn">Contacts</a></li>
+					</ul>
+				</div>
+			</div>
+		</header>
+		
+		<!-- Wrapper -->
+		<div class="wrapper">
+		
+			<!-- Started -->
+			<div class="section started">
+				<div class="centrize full-width">
+					<div class="vertical-center">
+						<div class="started-content">
+							<div class="date">02 May 2020</div>
+							<div class="h-title blog_title">Anomaly Detection made simple</div>
+							<div class="h-subtitle typing-bread">
+								<p><a href="index.html">Home</a> / <a href="blog.html">Blog</a></p>
+							</div>
+							<span class="typed-bread"></span>
+						</div>
+					</div>
+				</div>
+				<a href="#" class="mouse_btn"><span class="ion ion-mouse"></span></a>
+			</div>
+			
+			<!-- Blog -->
+			<div class="section blog">
+				<div class="content">
+					<div class="single-post-text">
+						<p>
+							In this new era of banking, financial payment services giants like Stripe, Square etc, made credit card payments seamless and the credit card transactions have been increasing by multiples every year¹ (source). Thus also resulting in Credit card fraud reports doubling every year² (source).
+						</p>
+						<p><img class="center" src="images/works/anomim.png" alt="" /></p>
+						<p><strong>
+							What is an Anomaly?</strong><br>
+							An Anomaly is something that deviates from what is normal or expected. In credit card transactions, most of the fraudulent cases deviate from the behavior of a normal transaction. It's subjective to say what normal transaction behavior is but there are different types of anomaly detection techniques to find this behavior³. Here we’ll be discussing three types of techniques.
+						</p>
+						<p><img class="center" src="images/works/anomblog.jpg" alt="" /></p>
+						<p><strong>
+							Credit Card Fraud Detection case:</strong><br>
+I’m considering the kaggle Credit Card Fraud Detection for carrying out anomaly detection⁴.
+Downloading the datasets from API calls:
+First download your API token by going to your Kaggle My Account (https://www.kaggle.com/*Your-Username*/account), going to section ‘API’ and clicking on ‘create new API token’. You will now download a file called ‘kaggle.json’. You have to upload this file to your colab notebook.
+						</p>
+						<kbd><b>
+							  from google.colab import files<br>
+							  
+							  uploaded = files.upload()</b>
+							</kbd>
+						<p>You can now use the code given below to download and unzip the dataset.</p>
+						<kbd><b>!pip uninstall -y kaggle<br>
+							!pip install --upgrade pip<br>
+							!pip install kaggle==1.5.6<br>
+							!kaggle -v<br>
+							!mkdir -p ~/.kaggle<br>
+							!cp kaggle.json ~/.kaggle/<br>
+							!chmod 600 ~/.kaggle/kaggle.json<br>
+							!kaggle datasets download -d mlg-ulb/creditcardfraud<br>
+							!unzip creditcardfraud.zip</b></kbd>
+						<p><strong>Pre-Processing:
+							</strong><br>In the given dataset there are 492 frauds out of 284,807 transactions, I’m considering a sample of 0.1 for our analysis without losing outlier fraction for further unsupervised learning. The outlier fraction is 0.001723.
+						<kbd><b>data= creditcard.sample(frac=0.1,random_state=1).reset_index(drop=True)</b></kbd>
+						</p>
+						<p>Setup to initialize the environment in pycaret⁵ and creates the transformation pipeline to prepare the data for modeling and deployment.</p>
+						<kbd><b>
+							X = setup(data,  ignore_features = ['Class'], session_id = 123)<br>
+							Y = data['Class']   </b></kbd>
+						<p><strong>1. Isolation Forest:</strong><br>The Isolation forest algorithm segregates observations by randomly selecting a feature and then randomly selecting a split value between the maximum and minimum values of selected feature similarly constructing the separation by creating random decision trees⁶. Thus, an anomaly score is calculated as the number of conditions required to separate a given observation.</p>
+						<p><strong>Building the model:</strong><br>We can build the model using create_model function in pycaret package, one can modify the parameters accordingly using the following code.</p>
+						<kbd><b>iforest = create_model('iforest',fraction=outlier_fraction)<br>
+							print(iforest)</b></kbd>
+						<p>Finding Isolation forest anomaly scores and labels using assign_model⁷ function.</p>
+						<p><img class="center" src="images/works/an1.png" alt="" /></p>
+						<p><strong>Evaluation:</strong><br>
+							ROC_AUC for the Isolation forest is 0.935.</p>
+						<p><img class="center" src="images/works/an2.png" alt="" /></p>
+
+						<p><strong>2. Angle-base Outlier Detection:</strong><br>In Angle-based outlier detection addresses the problem of high-dimensionality by comparing angles between pairs of distance vectors to consider as an anomaly rather than using distance directly⁸.</p>
+						<p><strong>Building the model:</strong><br>We can build the model using create_model function in pycaret package, one can modify the parameters accordingly using the following code.</p>
+						<kbd><b>abod = create_model('abod',fraction=outlier_fraction,verbose=True)<br>
+							print(abod)</b></kbd>
+						<p>Finding ABOD scores and labels using assign_model function.</p>
+						<p><img class="center" src="images/works/an3.png" alt="" /></p>
+						<p><strong>Evaluation:</strong><br>
+							ROC_AUC for the Angle-based outlier detection is 0.777.</p>
+						<p><img class="center" src="images/works/an4.png" alt="" /></p>	
+						
+						<p><strong>3. Subspace Outlier Detection:</strong><br>The Subspace outliers are identified by finding localized regions of the data in low-dimensional space that have abnormally low density⁹.</p>
+						<p><strong>Building the model:</strong><br>We can build the model using create_model function in pycaret package, one can modify the parameters accordingly using the following code.</p>
+						<kbd><b>sod = create_model('sod',fraction=outlier_fraction)<br>
+							print(sod)</b></kbd>
+						<p>Finding SOD scores and labels using assign_model function.</p>
+						<p><img class="center" src="images/works/an5.png" alt="" /></p>
+						<p><strong>Evaluation:</strong><br>
+							ROC_AUC for the Subspace outlier detection is 0.942.</p>
+						<p><img class="center" src="images/works/an6.png" alt="" /></p>
+
+						<p><strong>4. Minimum Covariance Determinant:</strong><br>This is one of the most robust way of finding outliers where it considers using robust estimator called MCD estimator. This illustrates the masking effect: the classical estimates can be so strongly affected by contamination that diagnostic tools such as the Mahalanobis distances become unable to detect the outliers¹⁰. As the robust distances are not sensitive to the masking effect, they can be used to flag the outliers¹¹.</p>
+						<p><strong>Building the model:</strong><br>We can build the model using create_model function in pycaret package, one can modify the parameters accordingly using the following code.</p>
+						<kbd><b>mcd = create_model('mcd',fraction=outlier_fraction)<br>
+							print(mcd)</b></kbd>
+						<p>Finding MCD anomaly scores and labels using assign_model function.</p>
+						<p><img class="center" src="images/works/an7.png" alt="" /></p>
+						<p><strong>Evaluation:</strong><br>
+							ROC_AUC for the Minimum Covariance Determinant outlier detection is 0.906.</p>
+						<p><img class="center" src="images/works/an8.png" alt="" /></p>
+						<p><strong>Comparing Results:</strong><br>From all the four anomaly detection techniques for this kaggle credit fraud detection dataset, we see that according to the ROC_AUC, Subspace outlier detection comparatively gives better result.<br>
+							Please check the detailed code of these anomaly detection techniques from this <a href="https://colab.research.google.com/drive/1tlW9QZwJSYD1OCWt8lWTimfDw_EcKuP7#scrollTo=hI9a8EOzTRN1">colab.</a></p>
+						<p><img class="center" src="images/works/an9.gif" alt="" /><br>3d TSNE plot for outliers of Subspace outlier detection( yellow-fraud, blue-normal)</p>
+						<p><strong>Conclusion:</strong><br>Most of the Banks and payment services using different anomaly scoring methods either using one anomaly score or averaging the scaled anomaly scores of some of anomaly scoring techniques to make sure not to lose any fraudulent transactions.</p>
+						
+						<p><strong>References</strong><br><a href="https://www.creditcards.com/credit-card-news/market-share-statistics.php">1. Credit card statistics by year.</a><br>
+							<a href="https://www.fool.com/the-ascent/research/identity-theft-credit-card-fraud-statistics/">2. Credit card reports statistics.</a><br>
+							<a href="https://books.google.be/books?id=8ZWfDwAAQBAJ&pg=PA335&lpg=PA335&dq=An+Anomaly+is+something+that+deviates+from+what+is+normal+or+expected.+In+credit+card+transactions,+mostly+fraudulent+cases+are+deviates+from+what+behavior+of+a+normal+transaction&source=bl&ots=_6T1OTpqPF&sig=ACfU3U1CNJOxUbokON2aVNrU2UIIdEnF0g&hl=en&sa=X&ved=2ahUKEwjMvv26n5PpAhVICewKHZVADfsQ6AEwAHoECAoQAQ#v=onepage&q=An%20Anomaly%20is%20something%20that%20deviates%20from%20what%20is%20normal%20or%20expected.%20In%20credit%20card%20transactions%2C%20mostly%20fraudulent%20cases%20are%20deviates%20from%20what%20behavior%20of%20a%20normal%20transaction&f=false">3. Advances and Trends in Artificial Intelligence.</a>
+							<br><a href="https://www.kaggle.com/mlg-ulb/creditcardfraud">4. kaggle Credit Card Fraud Detection.</a><br>
+							<a href="https://pycaret.org/">5. pycaret</a><br>
+							<a href="https://www.researchgate.net/publication/224384174_Isolation_Forest">6. Isolation Forest research paper.</a><br>
+							<a href="http://www.pycaret.org/tutorials/html/ANO101.html">7. pycaret assign_model.</a><br>
+							<a href="http://www.pycaret.org/tutorials/html/ANO101.html">8. Angle-base Outlier Detection research paper.</a><br>
+							<a href="http://www.pycaret.org/tutorials/html/ANO101.html">9. Subspace Outlier Detection research paper.</a><br>
+							<a href="http://www.pycaret.org/tutorials/html/ANO101.html">10. Anomaly Detection by Robust Statistics (MCD).</a><br>
+							<a href="http://www.pycaret.org/tutorials/html/ANO101.html">11. A Fast Algorithm for the Minimum Covariance Determinant Estimator.</a>
+						</p>
+
+						<p>This article is originally published on medium publication <a href="https://towardsdatascience.com/anomaly-detection-made-simple-70775c914377"><b>Towards Datascience</b></a></p>
+					
+					</div>
+					<!--<div class="post-comments">
+						<div class="title">
+							<div class="title_inner">4 COMMENTS</div>
+						</div>
+						<ul class="comments">
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">Jesse Pitman</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">John Doe</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">James Collins</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">James Ferguson</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+						</ul>
+						<div class="form-comment">
+							<div class="title">
+								<div class="title_inner">Write a comment</div>
+							</div>
+							<form id="comment_form" method="post">
+								<div class="group-val">
+									<input type="text" name="name" placeholder="Name" />
+								</div>
+								<div class="group-val">
+									<input type="text" name="email" placeholder="Email" />
+								</div>
+								<div class="group-val ct-gr">
+									<textarea name="message" placeholder="Comment"></textarea>
+								</div>
+								<a href="#" class="btn fill" onclick="$('#comment_form').submit(); return false;" data-text="Add Comment">Add Comment</a>
+							</form>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>-->
+		
+		</div>
+		
+		<!-- Footer -->
+		<footer>
+			<div class="soc">
+				<a target="_blank" href="https://www.linkedin.com/in/amaleshv/"><span class="ion ion-social-linkedin"></span></a>
+				<a target="_blank" href="https://medium.com/@amalesh.v7"><span class="ion ion-outlet"></span></a>
+				<a target="_blank" href="https://github.com/AmaleshV"><span class="ion ion-social-github"></span></a>
+				<a target="_blank" href="https://www.instagram.com/me_amalesh/"><span class="ion ion-social-instagram-outline"></span></a>
+				<a target="_blank" href="https://www.facebook.com/amalesh.vemula"><span class="ion ion-social-facebook-outline"></span></a>
+			</div>
+			<div class="copy">© Amalesh 2020. All rights reserved.</div>
+			<div class="clr"></div>
+		</footer>
+		
+		<!-- Lines -->
+		<div class="line top"></div>
+		<div class="line bottom"></div>
+		<div class="line left"></div>
+		<div class="line right"></div>
+		
+	</div>
+		
+		<!-- Lines -->
+		<div class="line top"></div>
+		<div class="line bottom"></div>
+		<div class="line left"></div>
+		<div class="line right"></div>
+		
+	</div>
+	
+	<!-- jQuery Scripts -->
+    <script src="js/jquery.min.js"></script>
+	<script src="js/jquery.validate.js"></script>
+	<script src="js/typed.js"></script>
+	<script src="js/magnific-popup.js"></script>
+	<script src="js/masonry.pkgd.js"></script>
+	<script src="js/imagesloaded.pkgd.js"></script>
+	<script src="js/masonry-filter.js"></script>
+	
+	<!-- Main Scripts -->
+	<script src="js/glitche-scripts.js"></script>
+	
+</body>
+</html>

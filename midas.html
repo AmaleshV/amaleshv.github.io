@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<!-- Basic -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Amalesh - Blog Post</title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	
+	<!-- Mobile Specific Metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
+	<!-- Load Fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,100,300italic,300,100italic,400italic,500,500italic,700,700italic&amp;subset=latin,cyrillic' rel='stylesheet'>
+	
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/glitche-basic.css" />
+	<link rel="stylesheet" href="css/glitche-layout.css" />
+	<link rel="stylesheet" href="css/ionicons.css" />
+	<link rel="stylesheet" href="css/magnific-popup.css" />
+	<link rel="stylesheet" href="css/animate.css" />
+	
+	<!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+	<!-- Favicons -->
+	<link rel="shortcut icon" href="images/favicons/favicon.ico">
+	<link rel="apple-touch-icon" href="images/favicons/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/favicons/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/favicons/apple-touch-icon-114x114.png">
+	
+</head>
+
+<body>	
+	
+	<!-- Preloader -->
+	<div class="preloader">
+		<div class="centrize full-width">
+			<div class="vertical-center">
+				<div class="pre-inner">
+					<div class="load typing-load"><p>loading...</p></div>
+					<span class="typed-load"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Container -->
+	<div class="container">
+		
+		<!-- Header -->
+		<header>
+			<div class="head-top">
+				<a href="#" class="menu-btn"><span></span></a>
+				<div class="top-menu">
+					<ul>
+						<li><a href="resume.html" class="lnk">Resume</a></li>
+						<li><a href="portfolio.html" class="lnk">Portfolio</a></li>
+						<li class="active"><a href="blog.html" class="lnk">Blog</a></li>
+						<li><a href="contacts.html" class="btn">Contacts</a></li>
+					</ul>
+				</div>
+			</div>
+		</header>
+		
+		<!-- Wrapper -->
+		<div class="wrapper">
+		
+			<!-- Started -->
+			<div class="section started">
+				<div class="centrize full-width">
+					<div class="vertical-center">
+						<div class="started-content">
+							<div class="date">21 March 2020</div>
+							<div class="h-title blog_title">Anomaly Detection in Dynamic Graphs</div>
+							<div class="h-subtitle typing-bread">
+								<p><a href="index.html">Home</a> / <a href="blog.html">Blog</a></p>
+							</div>
+							<span class="typed-bread"></span>
+						</div>
+					</div>
+				</div>
+				<a href="#" class="mouse_btn"><span class="ion ion-mouse"></span></a>
+			</div>
+			
+			<!-- Blog -->
+			<div class="section blog">
+				<div class="content">
+					<div class="single-post-text">
+						<p><strong>Motivation:</strong><br>
+							Denial of Service attack (DoS attack) is a cyber-attack meant to shut down a network making it inaccessible for its intended users. Recent major one on Github in February 2018 (source).
+						</p>
+						<p><img class="center" src="images/works/ddos_1060x900.png" alt="" /></p>
+						<p>Here we can see an anomalous behavior where sudden suspicious edges are created in the dynamic graph in a short span of time.</p>
+						<p><strong>
+							What is a Dynamic Graph?</strong><br>
+							A Node is a visual representation of an entity and an edge is the visual representation of a relationship between the nodes represented as a line connecting them. A Graph is a non-linear data structure consisting of nodes and edges. A Graph that is subject to a sequence of updates is called a Dynamic Graph. Most of the real-world problems lie in this category including transaction networks, all IM (instant messaging) networks including twitter, Facebook etc.
+						</p>
+						<p><strong>
+							Problem:</strong><br>
+							Anomaly behavior can be found in all these cases, In this article, we focus on detecting micro-cluster anomalies like suddenly arriving groups of suspiciously similar edges in the situation of DoS attack, or even tweets during a major event etc.
+						</p>
+
+						<p><strong>MIDAS:</strong> Microcluster-Based Detector of Anomalies in Edge Streams is a method
+						<br> (i) To detect microcluster anomalies while providing theoretical guarantees about its false positive probability.<br>
+						(ii) As it is online, thus processing each edge in constant time and constant memory, and also processes the data 162 − 644 times faster than state-of-the-art approaches.
+						<br>(iii) It provides 42%-48% higher accuracy (in terms of AUC) than state-of-the-art approaches.</p>
+
+						<p><strong>Method:
+							</strong><br>We’ll be inputting a time evolving graph proving an output of anomaly scores to the edges.
+						</p>
+						<p><strong>Assumption:</strong> Let’s say that there was a large stream of edges at the time timestamp 10 (~1000) compared to the timestamps less than 10. Shown in the figure below. Mean level at t=10 equals mean level for t less than 10.</p>
+						<p><img class="center" src="images/works/midas1.png" alt="" /></p>
+						<p>Considering this assumption we use Count-Min-Sketch data structure which uses hash functions to map events to frequencies unlike the hash table this uses sub-linear space where the collisions might happen which is considered as the cost due to the use of sub-linear space, more details can be found in this paper.</p>
+						
+						
+						<p><strong>(i) sᵤᵥ: u-v edges up to time t<br>
+						(ii) aᵤᵥ: u-v edges at current time t<br>
+						(iii) ŝᵤᵥ: Approximate total count<br>
+						(iv) âᵤᵥ: Approximate current count</strong></p>
+						<p>Anomaly score is given by</p>
+						<p><img class="center" src="images/works/midas2.png" alt="" /></p>
+						<p><strong>Fast and Accurate:</strong>Compared to the recent methods for finding anomalies in edge streams in Dynamic Graphs like SEDANSPOT takes large computation time due to as it requires several subprocesses (random-walking, sampling, etc). For DARPA dataset the running time is ~1.2 min for SEDANSPOT where as MIDAS less than 0.4 sec computation time.</p>
+						<p>MIDAS has better accuracy and precision compared to the SEDANSPOT on the DARPA dataset.</p>
+						<p><img class="center" src="images/works/midas3.png" alt="" /></p>
+						<p><b>ROC for DARPA dataset</b></p>
+						<p>You can find the source code for MIDAS through this <a href="https://github.com/bhatiasiddharth/MIDAS">link</a>, <a href="https://www.comp.nus.edu.sg/~sbhatia/assets/pdf/midas.pdf">Paper</a>.</p>
+						<p><strong>Implementation:</strong></div></p>
+						<p><strong>C++ compiler:</strong><br>
+							Install the latest C++17 compiler using MinGW Distro following this  <a href="https://nuwen.net/mingw.html">link</a>. Add the default path of C:\MinGW\bin to the system environment variables %path%.</p>
+						<p><strong>Git Bash:</strong><br>Check for g++ version after adding path to system environment variables, make sure to check whether its ≥ 9.2.0</p>
+						<p><img class="center" src="images/works/midas4.png" alt="" /></p>
+						<p>Clone the MIDAS repository using the following command.</p>
+						<p><img class="center" src="images/works/midas5.png" alt="" /></p>
+						<p>Run make to compile and create executable.</p>
+						<p><img class="center" src="images/works/midas6.png" alt="" /></p>
+						<p>Let's run MIDAS on DARPA data set, you can download original format and midas format (‘source’, ‘destination’ and ‘timestamp’) converted using the original format which can be downloaded from datasets from this <a href="https://github.com/bhatiasiddharth/MIDAS">link</a>.</p>
+						<p><img class="center" src="images/works/midas7.png" alt="" /></p>
+						<p>scores.txt file provides the anomaly scores of each of the edges and is generated in less than 1.3 sec for ~4.5 million IP to IP communications. Using the ‘attack’ variable in original dataset, we can find the AUC score with the help of auc.py file in the repository.</p>
+						<p><img class="center" src="images/works/midas8.png" alt="" /></p>		
+						
+						<p>AUC is ~<b>0.95!</b></p>
+						<p><strong>Conclusion:</strong><br>Dos Attacks, detection of anomalies in the bank transactions, twitter finding some specific events etc there are many real world problems which are time evolving graphs there is an application of these techniques for better understanding and finding the suspicious activities real-time could be a great solution.</p>
+
+						<p><strong>References</strong><br><a href="https://www.cs.cmu.edu/~deswaran/papers/icdm18-sedanspot.pdf">1. SEDANSPOT.</a><br>
+							<a href="https://arxiv.org/abs/1911.04464">2. Siddharth Bhatia, Bryan Hooi, Minji Yoon, Kijung Shin and Christos Faloutsos. “MIDAS: Microcluster-Based Detector of Anomalies in Edge Streams.” AAAI Conference on Artificial Intelligence (AAAI), 2020.</a><br>
+							<br><a href="https://en.wikipedia.org/wiki/Count%E2%80%93min_sketch">3. CMS</a>
+						</p>
+
+						<p>This article was originally published on medium publication <a href="https://towardsdatascience.com/anomaly-detection-in-dynamic-graphs-be3ec7ff7a5c"><b>Towards Datascience</b></a></p>
+					
+					</div>
+					<!--<div class="post-comments">
+						<div class="title">
+							<div class="title_inner">4 COMMENTS</div>
+						</div>
+						<ul class="comments">
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">Jesse Pitman</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">John Doe</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">James Collins</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">James Ferguson</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+						</ul>
+						<div class="form-comment">
+							<div class="title">
+								<div class="title_inner">Write a comment</div>
+							</div>
+							<form id="comment_form" method="post">
+								<div class="group-val">
+									<input type="text" name="name" placeholder="Name" />
+								</div>
+								<div class="group-val">
+									<input type="text" name="email" placeholder="Email" />
+								</div>
+								<div class="group-val ct-gr">
+									<textarea name="message" placeholder="Comment"></textarea>
+								</div>
+								<a href="#" class="btn fill" onclick="$('#comment_form').submit(); return false;" data-text="Add Comment">Add Comment</a>
+							</form>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>-->
+		
+		</div>
+		
+		<!-- Footer -->
+		<footer>
+			<div class="soc">
+				<a target="_blank" href="https://www.linkedin.com/in/amaleshv/"><span class="ion ion-social-linkedin"></span></a>
+				<a target="_blank" href="https://medium.com/@amalesh.v7"><span class="ion ion-outlet"></span></a>
+				<a target="_blank" href="https://github.com/AmaleshV"><span class="ion ion-social-github"></span></a>
+				<a target="_blank" href="https://www.instagram.com/me_amalesh/"><span class="ion ion-social-instagram-outline"></span></a>
+				<a target="_blank" href="https://www.facebook.com/amalesh.vemula"><span class="ion ion-social-facebook-outline"></span></a>
+			</div>
+			<div class="copy">© Amalesh 2020. All rights reserved.</div>
+			<div class="clr"></div>
+		</footer>
+		
+		<!-- Lines -->
+		<div class="line top"></div>
+		<div class="line bottom"></div>
+		<div class="line left"></div>
+		<div class="line right"></div>
+		
+	</div>
+		
+		<!-- Lines -->
+		<div class="line top"></div>
+		<div class="line bottom"></div>
+		<div class="line left"></div>
+		<div class="line right"></div>
+		
+	</div>
+	
+	<!-- jQuery Scripts -->
+    <script src="js/jquery.min.js"></script>
+	<script src="js/jquery.validate.js"></script>
+	<script src="js/typed.js"></script>
+	<script src="js/magnific-popup.js"></script>
+	<script src="js/masonry.pkgd.js"></script>
+	<script src="js/imagesloaded.pkgd.js"></script>
+	<script src="js/masonry-filter.js"></script>
+	
+	<!-- Main Scripts -->
+	<script src="js/glitche-scripts.js"></script>
+	
+</body>
+</html>

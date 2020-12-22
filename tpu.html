@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	
+	<!-- Basic -->
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Amalesh - Blog Post</title>
+	<meta name="description" content="">
+	<meta name="keywords" content="">
+	
+	<!-- Mobile Specific Metas -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	
+	<!-- Load Fonts -->
+	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,100,300italic,300,100italic,400italic,500,500italic,700,700italic&amp;subset=latin,cyrillic' rel='stylesheet'>
+	
+	<!-- CSS -->
+	<link rel="stylesheet" href="css/glitche-basic.css" />
+	<link rel="stylesheet" href="css/glitche-layout.css" />
+	<link rel="stylesheet" href="css/ionicons.css" />
+	<link rel="stylesheet" href="css/magnific-popup.css" />
+	<link rel="stylesheet" href="css/animate.css" />
+	
+	<!--[if lt IE 9]>
+	<script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
+	<script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+	
+	<!-- Favicons -->
+	<link rel="shortcut icon" href="images/favicons/favicon.ico">
+	<link rel="apple-touch-icon" href="images/favicons/apple-touch-icon.png">
+	<link rel="apple-touch-icon" sizes="72x72" href="images/favicons/apple-touch-icon-72x72.png">
+	<link rel="apple-touch-icon" sizes="114x114" href="images/favicons/apple-touch-icon-114x114.png">
+	
+</head>
+
+<body>	
+	
+	<!-- Preloader -->
+	<div class="preloader">
+		<div class="centrize full-width">
+			<div class="vertical-center">
+				<div class="pre-inner">
+					<div class="load typing-load"><p>loading...</p></div>
+					<span class="typed-load"></span>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!-- Container -->
+	<div class="container">
+		
+		<!-- Header -->
+		<header>
+			<div class="head-top">
+				<a href="#" class="menu-btn"><span></span></a>
+				<div class="top-menu">
+					<ul>
+						<li><a href="resume.html" class="lnk">Resume</a></li>
+						<li><a href="portfolio.html" class="lnk">Portfolio</a></li>
+						<li class="active"><a href="blog.html" class="lnk">Blog</a></li>
+						<li><a href="contacts.html" class="btn">Contacts</a></li>
+					</ul>
+				</div>
+			</div>
+		</header>
+		
+		<!-- Wrapper -->
+		<div class="wrapper">
+		
+			<!-- Started -->
+			<div class="section started">
+				<div class="centrize full-width">
+					<div class="vertical-center">
+						<div class="started-content">
+							<div class="date">06 Feb 2020</div>
+							<div class="h-title blog_title">Smart Hyperparameter Optimization of any Deep Learning model using TPU and Talos</div>
+							<div class="h-subtitle typing-bread">
+								<p><a href="index.html">Home</a> / <a href="blog.html">Blog</a></p>
+							</div>
+							<span class="typed-bread"></span>
+						</div>
+					</div>
+				</div>
+				<a href="#" class="mouse_btn"><span class="ion ion-mouse"></span></a>
+			</div>
+			
+			<!-- Blog -->
+			<div class="section blog">
+				<div class="content">
+					<div class="single-post-text">
+						<p><strong>What is TPU?</strong><br>
+							A tensor processing unit (TPU) is an AI accelerator application-specific integrated circuit (ASIC) developed by Google specifically for neural network machine learning. TPUs are specifically optimized to perform fast, bulky matrix multiplication. TPUs are 15x to 30x faster than GPUs and CPUs, Google says - source.
+						</p>
+						<p><img class="center" src="images/works/tpu_1060x512.png" alt="" /></p>
+						<p><strong>
+							Prepping of TPU environment in Colab:</strong><br>
+							Create a new Python Notebook in Google Colab, make sure to change the runtime to TPU and you’ll be allocated ~12.72 GB RAM, You can then increase the memory allocation to ~35.35 GB RAM by running the following command.
+						</p>
+
+						<kbd><b>
+							d=[]
+							<br>while(1):<br>
+							&nbsp;d.append('1')</b>
+							</kbd>
+						<p>The above command tries to expand (thanks to ‘append’ command) RAM and crashes in the process. Click on the ‘get more ram’ after the crash of previous memory allocation. For more such tips, feel free to refer my previous blog.
+						</p>
+
+
+						<p><strong>TPU + Talos Pipeline:
+							</strong><br>I’m considering the Kaggle IEEE-CIS Fraud Detection competition, I’ll now breakdown step by step of a fast way of hyperparameter optimization Deep learning pipeline in colab using TPU.
+						<p><strong>1–3. Preparation of data for Modeling:</strong><br>I’ve used the similar first three steps from my previous blog, Automate Kaggle Competition with the help of Google Colab namely:</p>
+						<p><b>1. Downloading the datasets from API calls. <br>2. Pre-Processing and Data Wrangling.<br> 3. Feature Engineering and Feature Selection.</b></p>
+						<p><b>4. Scaling the Data:</b><br>Adding to this we’ll be scaling the data to change the values of numeric columns in the dataset to a common scale. As the features are having different ranges, it is very important to scale data before imputing to Deep neural networks.
+						</p>
+						<kbd><b>from sklearn.preprocessing import StandardScaler <br> 
+							scaler = StandardScaler()  <br>
+							# fit and transform only on training data  <br>
+							final_tr_scaled = scaler.fit_transform(final_tr) <br> 
+							### Apply on test data ###<br>
+							final_ts_scaled = scaler.transform(final_ts) </b></kbd>						
+						
+							<p><b>5. TPU Initialization:</b><br>To use TPU effectively and use all the workers and cores provided by the colab TPU, we need to initalize the TPU system by using the following code to initialize a TPU strategy object which will be further used in the model building.
+							</p>
+							<kbd><b>import os <br> 
+								resolver = tf.distribute.cluster_resolver.TPUClusterResolver(tpu='grpc://' + os.environ['COLAB_TPU_ADDR'])  <br>
+								tf.config.experimental_connect_to_host(resolver.master()) <br>
+								tf.tpu.experimental.initialize_tpu_system(resolver) <br> 
+								strategy = tf.distribute.experimental.TPUStrategy(resolver)</b></kbd>							
+
+							<p><b>6. Model Building:</b><br>To do Talos hyperparameter optimization, we need to first initialize a deep learning model. I’ve used Keras as it uses high level API and tensorflow for its backend. I’ll be using Keras sequential model with two hidden layers and output layer with sigmoid as the activation function.
+							</p>
+							<kbd><b>def ieee_fraud_model(x_tr, y_tr, x_ts, y_ts, params): <br> 
+								&nbsp;with strategy.scope(): <br>
+								&nbsp;&nbsp;model = Sequential() <br>
+								&nbsp;&nbsp;model.add(Dense(params['first_hidden_layer'], input_dim=final_tr.shape[1],
+								&nbsp;&nbsp;activation=params['activation1'],
+								&nbsp;&nbsp;kernel_initializer=params['kernel_initializer'])) <br> 
+								&nbsp;&nbsp;model.add(Dropout(params['dropout']))<br>
+							    &nbsp;&nbsp;model.add(Dense(params['second_hidden_layer'], 
+                            activation=params['activation2'],
+							use_bias=True))<br>
+						    &nbsp;&nbsp;model.add(Dense(1, activation=params['last_activation']))<br>    &nbsp;&nbsp;model.compile(loss=params['losses'],
+                            optimizer=params['optimizer'],
+							metrics=['binary_accuracy'])<br> &nbsp; x_tr = np.asarray(x_tr).astype('float32')<br> &nbsp; y_tr = np.asarray(y_tr).astype('float32').reshape((-1,1))
+						<br> &nbsp; x_ts = np.asarray(x_ts).astype('float32')
+						<br> &nbsp;&nbsp;y_ts = np.asarray(y_ts).astype('float32').reshape((-1,1))<br>
+						&nbsp;&nbsp;# Fit the Keras model on the dataset
+						<br>&nbsp;&nbsp;steps_per_epoch = int(np.ceil(x_tr.shape[0] / params['batch_size'])) - 1<br>
+						&nbsp;&nbsp;history = model.fit(x_tr, y_tr, 
+						validation_data=[x_ts, y_ts],
+						batch_size=params['batch_size'],
+						epochs=params['epochs'],
+						&nbsp;&nbsp;callbacks=[talos.utils.live()],
+						verbose=1)<br>
+						&nbsp;return history, model</b></kbd>
+
+							<p><b>7. Parameter Grid:</b><br>The parameter grid chosen can depend on various factors like data, time to put for the modeling etc. I’ve considered the following grid for the hyperparameter optimization.
+							</p>
+							<kbd><b>
+								p = {'activation1':[ tf.nn.elu,tf.nn.relu],
+									 'activation2':[ tf.nn.elu,tf.nn.relu],
+									 'activation3':[ tf.nn.elu,tf.nn.relu],
+									 &nbsp;&nbsp;'first_hidden_layer': [10,8],
+									 'second_hidden_layer': [6], <br> 
+								     &nbsp;&nbsp;'batch_size': [100, 400],
+								'epochs': [30],
+								'learn_rate': [0.1,0.01],
+								'momentum': [0.2],
+								'dropout': [0, 0.1],
+								&nbsp;&nbsp;'weight_regulizer':[None],
+								'emb_output_dims': [None],  <br>
+								&nbsp;&nbsp;'optimizer': [ 'sgd','Adam', 'Nadam', 'RMSprop'],   
+								'losses': ['binary_crossentropy','logcosh'],
+								<br>&nbsp;&nbsp;last_activation': ['sigmoid'],
+								'kernel_initializer':["GlorotUniform"]} </b></kbd>		
+						</p>
+						<p><b>8. Talos hyperparameter scanning:</b>Then we scan along the parameter grid according to the metric and loss that we initialized in the parameter grid. We use the following code to scan the parameter grid where:
+							We used the ieee_fraud_model as the model to scan, we’ve initialized the model with strategy.scope() where it uses all the TPU workers to build the model. This increases the speed of building the model 15x-20x times faster.
+						</p>
+						<p><kbd><b>%matplotlib inline<br>
+							with CustomObjectScope({'GlorotUniform': glorot_uniform()}):<br>
+							&nbsp;&nbsp;ty = talos.Scan(x=final_tr_scaled,
+							y=yTrain,x_val=final_ts_scaled,y_val=yTest,
+							<br>&nbsp;&nbsp; model=ieee_fraud_model,params=p,
+							experiment_name='Talos_metric_ba')</b></kbd></p>
+						<p><img class="center" src="images/works/tpu2.png" alt="" /></p>
+
+						<p><b>Talos scan live plot progress</b></p>
+						<p><strong>9. Prediction :</strong><br>Then from all the models scanned, we select the best model according to the metric (‘binary_accuracy’ in this case) to do the prediction for the submission file using the following code.</p>
+						<p><kbd><b>with CustomObjectScope({'GlorotUniform': glorot_uniform()}):<br>
+							&nbsp;&nbsp;talospred=talos.Predict(scan_object=ty)
+							<br>&nbsp;&nbsp; y_predi=talospred.predict(x=final_ts_scaled,metric='binary_accuracy',asc=True)</b></kbd></p>
+						<p><strong>10. Save and Restore the model for submission file:</strong><br>Further you can also deploy the model according to the metric as a zip file where you can restore the model for predictions and to create submission file by using those predictions.</strong></p>
+						<p><kbd><b>#deploy model having best binary_accuracy<br>
+							with CustomObjectScope({'GlorotUniform': glorot_uniform()}):
+							<br>&nbsp;&nbsp; talos.Deploy(scan_object=ty, model_name='tal_model',metric='binary_accuracy')<br>
+							#restore the saved model<br>with CustomObjectScope({'GlorotUniform': glorot_uniform()}):<br>  &nbsp;&nbsp; tal_model = talos.Restore('tal_model.zip')
+						<br>#predictions from the best talos model<br>ytest_cb=tal_model.model.predict(final_ts1_scaled)<br>
+						### prepping submission file###<br>
+						submission_cb= np.c_[test.TransactionID,ytest_cb]<br>
+						submission_cb= pd.DataFrame(submission_cb)<br>
+						submission_cb.columns= ['TransactionID','isFraud']<br>
+						print(submission_cb)<br>
+						submission_cb.to_csv('submission_cb.csv')<br>
+						from google.colab import files<br>
+						files.download('submission_cb.csv')</b></kbd></p>
+						<p>Please check the detailed Kaggle pipeline from this <a href="https://colab.research.google.com/drive/1a59Y-6Pz0wC3S90AsOaJRLsIMleeOb0q">colab</a>, I’ve received a score of ~0.91 on the submission file. We can further use other Keras Autoencoders, adding layers and increasing the grid or any other Keras DNN’s defining in the model building.</p>
+						<p><strong>Conclusion:</strong><br>Building a Deep neural network is a time taking process. Further, hyperparameter tuning of the defined neural network could even take days for big datasets like these (~600,000 observations and 394 features). Using Tensor Processing Unit to the fullest, we can hereby drastically minimize the time to build any deep learning model with better results.</p>
+						
+						
+						
+						<p><strong>References</strong><br><a href="https://arxiv.org/abs/1603.02754">1. XGBoost.</a><br>
+							<a href="https://www.kaggle.com/c/ieee-fraud-detection">2. Kaggle IEEE-CIS Fraud Detection competition.</a>
+							<br><a href="https://github.com/autonomio/talos">3. Talos.</a><br>
+						</p>
+
+						<p>This article is originally published on medium publication <a href="https://towardsdatascience.com/smart-hyperparameter-optimization-of-any-deep-learning-model-using-tpu-and-talos-9eb48d09d637"><b>Towards Datascience</b></a></p>
+					
+					</div>
+					<!--<div class="post-comments">
+						<div class="title">
+							<div class="title_inner">4 COMMENTS</div>
+						</div>
+						<ul class="comments">
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">Jesse Pitman</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">John Doe</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">James Collins</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+							<li class="post-comment">
+								<div class="image">
+									<img src="images/man1.jpg" alt="">
+								</div>
+								<div class="desc">
+									<div class="name">James Ferguson</div>
+									<p>
+										An has alterum nominavi. Nam at elitr veritus voluptaria. Cu eum regione tacimates vituperatoribus, ut mutat delenit est.
+									</p>
+								</div>
+							</li>
+						</ul>
+						<div class="form-comment">
+							<div class="title">
+								<div class="title_inner">Write a comment</div>
+							</div>
+							<form id="comment_form" method="post">
+								<div class="group-val">
+									<input type="text" name="name" placeholder="Name" />
+								</div>
+								<div class="group-val">
+									<input type="text" name="email" placeholder="Email" />
+								</div>
+								<div class="group-val ct-gr">
+									<textarea name="message" placeholder="Comment"></textarea>
+								</div>
+								<a href="#" class="btn fill" onclick="$('#comment_form').submit(); return false;" data-text="Add Comment">Add Comment</a>
+							</form>
+						</div>
+					</div>
+					<div class="clear"></div>
+				</div>
+			</div>-->
+		
+		</div>
+		
+		<!-- Footer -->
+		<footer>
+			<div class="soc">
+				<a target="_blank" href="https://www.linkedin.com/in/amaleshv/"><span class="ion ion-social-linkedin"></span></a>
+				<a target="_blank" href="https://medium.com/@amalesh.v7"><span class="ion ion-outlet"></span></a>
+				<a target="_blank" href="https://github.com/AmaleshV"><span class="ion ion-social-github"></span></a>
+				<a target="_blank" href="https://www.instagram.com/me_amalesh/"><span class="ion ion-social-instagram-outline"></span></a>
+				<a target="_blank" href="https://www.facebook.com/amalesh.vemula"><span class="ion ion-social-facebook-outline"></span></a>
+			</div>
+			<div class="copy">© Amalesh 2020. All rights reserved.</div>
+			<div class="clr"></div>
+		</footer>
+		
+		<!-- Lines -->
+		<div class="line top"></div>
+		<div class="line bottom"></div>
+		<div class="line left"></div>
+		<div class="line right"></div>
+		
+	</div>
+		
+		<!-- Lines -->
+		<div class="line top"></div>
+		<div class="line bottom"></div>
+		<div class="line left"></div>
+		<div class="line right"></div>
+		
+	</div>
+	
+	<!-- jQuery Scripts -->
+    <script src="js/jquery.min.js"></script>
+	<script src="js/jquery.validate.js"></script>
+	<script src="js/typed.js"></script>
+	<script src="js/magnific-popup.js"></script>
+	<script src="js/masonry.pkgd.js"></script>
+	<script src="js/imagesloaded.pkgd.js"></script>
+	<script src="js/masonry-filter.js"></script>
+	
+	<!-- Main Scripts -->
+	<script src="js/glitche-scripts.js"></script>
+	
+</body>
+</html>
